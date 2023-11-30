@@ -110,16 +110,19 @@
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col cols="12" sm="6">
+              <v-col cols="12" sm="4">
                 <v-text-field clearable @input="handleInputName" label="Name" v-model="insertNameModel" hint="Name">
                   <template v-slot:prepend-inner>
                     <v-icon :icon="addIcon"></v-icon>
                   </template>
                 </v-text-field>
               </v-col>
-              <v-col cols="12" sm="6">
+              <v-col cols="12" sm="4">
                 <v-text-field clearable :prepend-inner-icon="levelIcon" @input="handleInputLevel" label="Level"
                   v-model="insertLevelModel" hint="Level" type="number"></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="4">
+                <v-text-field clearable prepend-inner-icon="mdi-shape-square-plus" label="Description" v-model="insertDescriptionModel" hint="Level" ></v-text-field>
               </v-col>
             </v-row>
             <v-row>
@@ -181,6 +184,7 @@ export default {
       editLevelModel: "",
       insertNameModel: "",
       insertLevelModel: "",
+      insertDescriptionModel: "",
       insertImage: [],
       imgSrc: '',
 
@@ -210,7 +214,7 @@ export default {
     },
     async insertProcess() {
       const byteFile = await generalService.uploadImage(this.insertImage)
-      crudService.insertItem('https://localhost:7280/api/ProgrammingLanguages', { name: this.insertNameModel, level: this.insertLevelModel, languageImage: byteFile }, this.$root, this.$refs);
+      crudService.insertItem('https://localhost:7280/api/ProgrammingLanguages', { name: this.insertNameModel, level: this.insertLevelModel, languageImage: byteFile, description: this.insertDescriptionModel }, this.$root, this.$refs);
     },
     insertButtonClick() {
       this.dialogInsertProcess = true;
