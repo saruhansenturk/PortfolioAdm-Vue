@@ -67,10 +67,10 @@
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col cols="12" sm="6" md="4">
+              <v-col cols="12" sm="6" md="6">
                 <v-text-field clearable label="Name" v-model="editNameModel" hint="Name"></v-text-field>
               </v-col>
-              <v-col cols="12" sm="6" md="4">
+              <v-col cols="12" sm="6" md="6">
                 <v-slider v-model="editLevelModel" label="Level" color="blue" class="align-center" max="100" min="0" hide-details>
                   <template v-slot:append>
                     <v-text-field v-model="editLevelModel" hide-details single-line density="compact" type="number"
@@ -78,10 +78,17 @@
                   </template>
                 </v-slider>
               </v-col>
-              <v-col cols="12" sm="6" md="4">
+            </v-row>
+            <v-row>
+              <v-col cols="12" sm="6" md="6">
+                <v-text-field clearable label="Description" v-model="editDescriptionModel" hint="Description"></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" md="6">
                 <v-text-field label="IsDeleted*" readonly v-model="editDisableIsDeleted"></v-text-field>
               </v-col>
             </v-row>
+              
+            
           </v-container>
         </v-card-text>
 
@@ -182,6 +189,7 @@ export default {
       dialogInsertProcess: false,
       editNameModel: "",
       editLevelModel: "",
+      editDescriptionModel: "",
       insertNameModel: "",
       insertLevelModel: "",
       insertDescriptionModel: "",
@@ -200,14 +208,16 @@ export default {
   },
   methods: {
     doubleClickRow(item) {
+      console.log(item);
       this.editNameModel = item.data.name;
       this.editLevelModel = item.data.level;
+      this.editDescriptionModel = item.data.description;
       this.titleModel = item.data.id;
       this.editDisableIsDeleted = item.data.isDeleted;
       this.dialogUpdateProcess = true;
     },
     updateProcess() {
-      crudService.updateItem(`https://localhost:7280/api/ProgrammingLanguages/Update`, { id: this.titleModel, name: this.editNameModel, level: parseInt(this.editLevelModel) }, this.$root, this.$refs);
+      crudService.updateItem(`https://localhost:7280/api/ProgrammingLanguages/Update`, { id: this.titleModel, name: this.editNameModel, level: parseInt(this.editLevelModel), description: this.editDescriptionModel }, this.$root, this.$refs);
     },
     deleteProcess() {
       crudService.deleteItem(this.selectedId, `https://localhost:7280/api/ProgrammingLanguages/${this.selectedId.id}`, this.$root, this.$refs);

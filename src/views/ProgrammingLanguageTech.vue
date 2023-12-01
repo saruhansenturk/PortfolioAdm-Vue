@@ -64,16 +64,19 @@
     <v-dialog v-model="dialogUpdateProcess" width="1024" style="z-index: 200;">
       <v-card>
         <v-card-title>
-          <span class="text-h6">Edit Programming Language Tech <span style="color:rgb(21, 87, 211)"> {{ titleModel }}</span></span>
+          <span class="text-h6">Edit Programming Language Tech <span style="color:rgb(21, 87, 211)"> {{ titleModel
+          }}</span></span>
         </v-card-title>
 
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col cols="12" sm="6" md="4">
+
+              <v-col cols="12" sm="6" md="6">
                 <v-text-field clearable label="Name" v-model="editNameModel" hint="Name"></v-text-field>
               </v-col>
-              <v-col cols="12" sm="6" md="4">
+
+              <v-col cols="12" sm="6" md="6">
                 <v-slider v-model="editLevelModel" label="Level" color="blue" class="align-center" max="100" min="0"
                   hide-details>
                   <template v-slot:append>
@@ -82,10 +85,22 @@
                   </template>
                 </v-slider>
               </v-col>
+            </v-row>
+            <v-row>
+
+              <v-col cols="12" sm="6">
+                <v-text-field clearable label="Description" v-model="editDescriptionModel" hint="Description">
+                  <template v-slot:prepend-inner>
+                    <v-icon icon="mdi-gradient-horizontal"></v-icon>
+                  </template>
+                </v-text-field>
+              </v-col>
+
               <v-col cols="12" sm="6" md="4">
                 <v-text-field label="IsDeleted*" readonly v-model="editDisableIsDeleted"></v-text-field>
               </v-col>
             </v-row>
+
           </v-container>
         </v-card-text>
 
@@ -123,10 +138,11 @@
                 </v-text-field>
               </v-col>
               <v-col cols="12" md="6">
-                <v-slider v-model="insertLevelModel" label="Level" color="blue" class="align-center" max="100" min="0" hide-details>
+                <v-slider v-model="insertLevelModel" label="Level" color="blue" class="align-center" max="100" min="0"
+                  hide-details>
                   <template v-slot:append>
                     <v-text-field v-model="insertLevelModel" hide-details single-line density="compact" type="number"
-                                  style="width: 70px">
+                      style="width: 70px">
                     </v-text-field>
                   </template>
                 </v-slider>
@@ -136,12 +152,24 @@
             <v-row>
               <v-col cols="12" sm="6">
 
-                <v-select chips v-model="selectedProg" :items="programmings"  item-title="programmingLangName" item-value="id" label="Programming Language" variant="solo-filled"
-                          @click="getProgramming"  @update:modelValue="getSelected" hint="Programming Language">
+                <v-select chips v-model="selectedProg" :items="programmings" item-title="programmingLangName"
+                  item-value="id" label="Programming Language" variant="solo-filled" @click="getProgramming"
+                  @update:modelValue="getSelected" hint="Programming Language">
 
                 </v-select>
               </v-col>
+
               <v-col cols="12" sm="6">
+                <v-text-field clearable label="Description" v-model="insertDescriptionModel" hint="Description">
+                  <template v-slot:prepend-inner>
+                    <v-icon icon="mdi-gradient-horizontal"></v-icon>
+                  </template>
+                </v-text-field>
+              </v-col>
+
+            </v-row>
+            <v-row>
+              <v-col cols="12" sm="12">
                 <DxFileUploader uploadMode="useForms" :onValueChanged="handleImgUpload"></DxFileUploader>
               </v-col>
             </v-row>
@@ -162,7 +190,6 @@
       </v-card>
     </v-dialog>
   </v-row>
-
 </template>
 
 <script>
@@ -195,9 +222,11 @@ export default {
       dialogInsertProcess: false,
       editNameModel: "",
       editLevelModel: "",
+      editDescriptionModel: "",
       insertNameModel: "",
       insertLevelModel: "",
       insertImage: [],
+      insertDescriptionModel: "",
       imgSrc: '',
       programmings: [],
       selectedProg: [],
@@ -221,12 +250,13 @@ export default {
     doubleClickRow(item) {
       this.editNameModel = item.data.name;
       this.editLevelModel = item.data.level;
+      this.editDescriptionModel = item.data.description;
       this.titleModel = item.data.id;
       this.editDisableIsDeleted = item.data.isDeleted;
       this.dialogUpdateProcess = true;
     },
     updateProcess() {
-      crudService.updateItem(`https://localhost:7280/api/ProgrammingLangTechs/Update`, { id: this.titleModel, name: this.editNameModel, level: parseInt(this.editLevelModel) }, this.$root, this.$refs);
+      crudService.updateItem(`https://localhost:7280/api/ProgrammingLangTechs/Update`, { id: this.titleModel, name: this.editNameModel, level: parseInt(this.editLevelModel), description: this.editDescriptionModel }, this.$root, this.$refs);
     },
     deleteProcess() {
       crudService.deleteItem(this.selectedId, `https://localhost:7280/api/ProgrammingLangTechs/${this.selectedId.id}`, this.$root, this.$refs);
@@ -237,7 +267,7 @@ export default {
         byteFile = await generalService.uploadImage(this.insertImage)
       }
 
-      crudService.insertItem('https://localhost:7280/api/ProgrammingLangTechs', { name: this.insertNameModel, level: parseInt(this.insertLevelModel), programmingLanguageId: this.selectedProg, languageTechImage: byteFile ?? null }, this.$root, this.$refs);
+      crudService.insertItem('https://localhost:7280/api/ProgrammingLangTechs', { name: this.insertNameModel, level: parseInt(this.insertLevelModel), programmingLanguageId: this.selectedProg, languageTechImage: byteFile ?? null, description: this.insertDescriptionModel }, this.$root, this.$refs);
     },
     insertButtonClick() {
       this.dialogInsertProcess = true;
@@ -279,8 +309,8 @@ export default {
     },
     async addMenuItems(e) {
       console.log(e);
-      if (e?.row !== undefined )
-        var getDetails = await generalService.contextMenuItems(`https://localhost:7280/api/ProgrammingLangTechs/${e?.row?.data?.id}`, e,this.$root);
+      if (e?.row !== undefined)
+        var getDetails = await generalService.contextMenuItems(`https://localhost:7280/api/ProgrammingLangTechs/${e?.row?.data?.id}`, e, this.$root);
     },
     selectionChanged(item) {
       this.selectedId = item.selectedRowsData[0];
