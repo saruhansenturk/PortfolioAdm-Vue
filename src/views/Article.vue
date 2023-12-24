@@ -25,7 +25,6 @@
           </v-tooltip>
         </v-toolbar>
       </v-card>
-
     </v-container>
     <DxHtmlEditor :value="markup" v-model="markup" height="725px">
       <DxMediaResizing :enabled="true" />
@@ -70,6 +69,7 @@
         <DxItem name="insertColumnLeft" />
         <DxItem name="insertColumnRight" />
         <DxItem name="deleteColumn" />
+        <DxItem widget="dxButton" :options="addSeparatorBtnOptions" />
       </DxToolbar>
     </DxHtmlEditor>
 
@@ -143,6 +143,7 @@ import {
 import crudUnspecifiedService from '@/services/crudUnspecifiedService';
 import generalService from '@/services/generalService';
 import httpService from '@/services/httpService';
+import { DxButton } from 'devextreme-vue';
 //import { markup, tabs } from './data.js';
 
 export default {
@@ -154,6 +155,7 @@ export default {
     DxImageUpload,
     DxCheckBox,
     DxSelectBox,
+    DxButton
   },
 
   data() {
@@ -172,7 +174,13 @@ export default {
       selectedCategory: [],
       insertAuthorModel: '',
       insertTitleModel: '',
-      insertArticleNameModel: ''
+      insertArticleNameModel: '',
+      addSeparatorBtnOptions: {
+        icon: "mdi mdi-plus-network-outline",
+        name: "addSprtr",
+        hint: "Add Seperator to Text",
+        onClick: this.insertSeparator
+      }
     };
   },
   methods: {
@@ -208,6 +216,9 @@ export default {
         this.comboDatas = response.data;
       }
     },
+    insertSeparator() {
+      this.markup += "";
+    }
   }
 };
 </script>
